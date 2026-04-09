@@ -1,8 +1,15 @@
 bin/
 obj/
+.vs/
 *.user
 *.suo
-.vs/
 *.log
+*.dmp
+*.zip
+*.nupkg
 doorstop_extracted/
-doorstop.zip
+packages/
+TestResults/
+BenchmarkDotNet.Artifacts/
+project.lock.json
+*.DotSettings.user

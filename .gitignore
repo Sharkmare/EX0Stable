@@ -1,0 +1,8 @@
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.log
+doorstop_extracted/
+doorstop.zip

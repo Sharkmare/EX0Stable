@@ -1,0 +1,15 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.log
+*.dmp
+*.zip
+*.nupkg
+doorstop_extracted/
+packages/
+TestResults/
+BenchmarkDotNet.Artifacts/
+project.lock.json
+*.DotSettings.user

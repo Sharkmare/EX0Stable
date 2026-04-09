@@ -1,17 +1,16 @@
 # EX0Stable
 
-Fixes Resonite crashes when controllers are hotplugged, especially over Steam Link wireless.
+Fixes Resonite renderer crashes when controllers are hotplugged, especially over Steam Link wireless.
 
 ## The Problem
 
-Resonite's renderer process crashes when:
-- Controllers are turned on after Resonite has launched
-- Swapping between hand tracking and controllers
-- Using Steam Link wireless (latency causes the role assignment to arrive late)
+Resonite's renderer process crashes when controllers connect via vrlink with `Role: Invalid` (common over Steam Link due to latency). The native `GetSerialNumber()` call on a not-yet-ready vrlink device corrupts the heap, killing the renderer.
 
 ## Root Cause
 
-Controllers arriving over Steam Link initially report `Role: Invalid` to the renderer's `SteamVRDriver.OnDeviceConnected`. The renderer tries to register them immediately and crashes because the controller type is not yet known. The corrected role arrives in a subsequent `TrackedDeviceRoleChanged` event, but the renderer is already dead.
+`SteamVRDriver.OnDeviceConnected` defers controllers with `Role: Invalid` to a list for later processing. But the deferral line calls `GetSerialNumber(index)`, which queries OpenVR native properties on a device that isn't ready yet. This corrupts the native heap and crashes the renderer with `STATUS_HEAP_CORRUPTION` (0xC0000374).
+
+Resonite 2026.4.9.1303 moved two other property queries out of the Invalid path but missed this one.
 
 ## Install
 
@@ -34,8 +33,8 @@ Resonite/
 
 Patches `SteamVRDriver.OnDeviceConnected` at renderer startup via Harmony:
 
-- **Prefix**: Skips controllers that arrive with `Role=Invalid`. They get processed when the role-changed event fires with the real role.
-- **Finalizer**: Catches any other unhandled crash in the method so the renderer process survives.
+- **Prefix**: When a controller arrives with `Role=Invalid`, skips the original method entirely. Adds the device to the deferred list with a placeholder serial instead of calling `GetSerialNumber()`. When the role becomes valid, `OnNewPoses` re-triggers `OnDeviceConnected` and the original code runs the native queries safely.
+- **Finalizer**: Catches any other unhandled exception so the renderer process survives.
 
 ## Build
 

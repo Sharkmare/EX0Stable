@@ -12,7 +12,7 @@ public class EX0Stable : ResoniteMod
     public override string Name    => "EX0Stable";
     public override string Author  => "Sharkmare";
     public override string Version => "1.0.0";
-    public override string Link    => "";
+    public override string Link    => "https://github.com/Sharkmare/EX0Stable";
 
     private const string HARMONY_ID = "dev.ex0.stable";
 

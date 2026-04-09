@@ -1,8 +1,9 @@
 // Patch: SteamVRDriver.OnDeviceConnected (renderer process)
 //
 // Heap corruption crash when controllers arrive via vrlink with Role=Invalid.
-// Resonite 2026.4.9.1303 moved render model/serial queries out of the Invalid
-// path, but left GetSerialNumber() in the invalidRoleControllers.Add() call.
+// Resonite 2026.4.9.1303 moved the render model and serial property queries
+// into the valid-role else branch, but the deferral line still calls
+// GetSerialNumber() via invalidRoleControllers.Add(new InvalidRoleDevice(index, GetSerialNumber(index))).
 // That native OpenVR property query on a not-yet-ready vrlink device corrupts
 // the heap.
 //

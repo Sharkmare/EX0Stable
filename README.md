@@ -1,3 +1,9 @@
+
+# THIS MOD LITING IS A PLACEHOLDER FOR FUTURE DISCOVERED STABILITY DEBUGGING
+
+# THE CURRENT VERSION OF THE MOD HAS BEEN PATCHED BY RESONITE
+
+
 # EX0Stable
 
 Fixes Resonite renderer crashes when controllers are hotplugged, especially over Steam Link wireless.
